@@ -7,6 +7,7 @@ A dark, cinematic portfolio inspired by [Ricardo Chance](https://ricardochance.c
 - Full-screen hero with interactive 3D particle star (mouse-responsive)
 - Minimal navigation with corner frame accents
 - About, GitHub Projects, Blog, and Contact sections
+- Featured GitHub projects with live 3D React Three Fiber visuals
 - GitHub repos fetched from the API (revalidated hourly)
 - Fully responsive layout
 - Vercel-ready deployment
@@ -22,9 +23,7 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ## Customize
 
-Edit `src/lib/site-config.ts` for your name, copy, email, and social links.
-
-Replace `public/resume.pdf` with your actual resume PDF.
+Edit `src/lib/site-config.ts` for your name, copy, email, social links, and featured project list.
 
 ## Environment Variables
 

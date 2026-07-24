@@ -94,3 +94,29 @@ body {
 .animate-fade-up-delay-3 {
   animation: fade-up 0.9s ease-out 0.45s both;
 }
+
+.project-visual {
+  isolation: isolate;
+}
+
+.project-visual-glow {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 70% 55% at 50% 40%, rgba(8, 145, 178, 0.28), transparent 65%),
+    radial-gradient(ellipse 40% 35% at 80% 80%, rgba(180, 83, 9, 0.14), transparent 60%),
+    linear-gradient(160deg, rgba(3, 7, 18, 0.2), rgba(4, 16, 24, 0.55));
+  pointer-events: none;
+}
+
+.project-card-shade {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(3, 7, 18, 0.15) 0%,
+      rgba(3, 7, 18, 0.35) 35%,
+      rgba(3, 7, 18, 0.82) 72%,
+      rgba(3, 7, 18, 0.94) 100%
+    );
+  pointer-events: none;
+}

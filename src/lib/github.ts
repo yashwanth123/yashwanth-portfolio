@@ -55,8 +55,14 @@ export async function fetchGitHubRepos(
     page += 1;
   }
 
+  const excluded = new Set([
+    username,
+    `${username}.github`,
+    `${username}.github.io`,
+  ]);
+
   return repos
-    .filter((repo) => repo.name !== `${username}.github`)
+    .filter((repo) => !excluded.has(repo.name))
     .sort(
       (a, b) =>
         new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime(),
