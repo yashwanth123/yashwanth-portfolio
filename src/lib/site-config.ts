@@ -1,3 +1,22 @@
+export type ProjectVisual =
+  | "agent"
+  | "orbit"
+  | "lattice"
+  | "scan"
+  | "network"
+  | "pulse"
+  | "core"
+  | "helix";
+
+export type FeaturedProject = {
+  repo: string;
+  title: string;
+  blurb: string;
+  visual: ProjectVisual;
+  tags: string[];
+  href?: string;
+};
+
 export const siteConfig = {
   name: "Yashwanth Sai T",
   role: "SOFTWARE ENGINEER · GENAI & AGENTIC SYSTEMS",
@@ -6,13 +25,78 @@ export const siteConfig = {
   heroDescription:
     "Software Engineer with 5+ years building LLM-powered applications, RAG pipelines, and multi-agent systems — productionized on AWS, GCP, and Azure.",
   githubUsername: "yashwanth123",
-  resumePath: "/resume.pdf",
   email: "yashwanthsi2011@gmail.com",
   phone: "(213) 451-1130",
   social: {
     github: "https://github.com/yashwanth123",
     linkedin: "https://www.linkedin.com/in/yashwanthsai-t",
   },
+  featuredProjects: [
+    {
+      repo: "job-agent-ai",
+      title: "Job Agent AI",
+      blurb:
+        "Full-stack AI job-search agent — matching, outreach drafting, and end-to-end workflow automation.",
+      visual: "agent",
+      tags: ["Python", "Agents", "LangChain"],
+    },
+    {
+      repo: "spark-dating",
+      title: "Spark Dating",
+      blurb:
+        "Real-time dating product UI with expressive motion and TypeScript-first architecture.",
+      visual: "orbit",
+      tags: ["TypeScript", "Next.js", "Realtime"],
+    },
+    {
+      repo: "miltarydocs_rag",
+      title: "Military Docs RAG",
+      blurb:
+        "Retrieval-augmented generation over dense document corpora with grounded citations.",
+      visual: "lattice",
+      tags: ["Python", "RAG", "Vector DB"],
+    },
+    {
+      repo: "PulmoScan-AI",
+      title: "PulmoScan AI",
+      blurb:
+        "AI-assisted pulmonary imaging analysis for clinical decision support workflows.",
+      visual: "scan",
+      tags: ["Python", "Vision", "Healthcare"],
+    },
+    {
+      repo: "CyberSecurity-graduate-research-work-",
+      title: "Cybersecurity Research",
+      blurb:
+        "Graduate research tooling and experiments in threat analysis and secure systems.",
+      visual: "network",
+      tags: ["TypeScript", "Security", "Research"],
+    },
+    {
+      repo: "IOT_bot",
+      title: "IoT Bot",
+      blurb:
+        "IoT automation bot for device telemetry, control loops, and edge workflows.",
+      visual: "pulse",
+      tags: ["Python", "IoT", "Automation"],
+    },
+    {
+      repo: "mem0-eval",
+      title: "Mem0 Eval",
+      blurb:
+        "Evaluation harness exploring agent memory layers — recall quality, conflicts, and retrieval.",
+      visual: "helix",
+      tags: ["Python", "Memory", "Evals"],
+    },
+    {
+      repo: "langgraph-eval",
+      title: "LangGraph Eval",
+      blurb:
+        "Resilient multi-agent graph experiments with LangGraph for production-minded workflows.",
+      visual: "core",
+      tags: ["Python", "LangGraph", "Agents"],
+    },
+  ] satisfies FeaturedProject[],
   about: {
     title: "Engineering intelligent systems that ship to production.",
     paragraphs: [

@@ -47,11 +47,11 @@ export function Hero() {
             </div>
 
             <div className="animate-fade-up-delay-2 flex flex-col gap-4 sm:flex-row sm:items-center">
-              <GhostButton href={siteConfig.resumePath} external>
-                View My Resume
+              <GhostButton href="#projects">
+                Explore Projects
               </GhostButton>
-              <GhostButton href="#projects" variant="secondary">
-                GitHub Projects
+              <GhostButton href={siteConfig.social.github} external variant="secondary">
+                GitHub
               </GhostButton>
             </div>
           </div>

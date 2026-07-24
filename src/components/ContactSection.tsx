@@ -39,8 +39,8 @@ export function ContactSection() {
               <GhostButton href={siteConfig.social.linkedin} external>
                 LinkedIn
               </GhostButton>
-              <GhostButton href={siteConfig.resumePath} external>
-                Resume
+              <GhostButton href="#projects" variant="secondary">
+                Projects
               </GhostButton>
             </div>
           </div>
