@@ -103,20 +103,23 @@ body {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse 70% 55% at 50% 40%, rgba(8, 145, 178, 0.28), transparent 65%),
-    radial-gradient(ellipse 40% 35% at 80% 80%, rgba(180, 83, 9, 0.14), transparent 60%),
-    linear-gradient(160deg, rgba(3, 7, 18, 0.2), rgba(4, 16, 24, 0.55));
+    radial-gradient(ellipse 75% 60% at 50% 42%, rgba(34, 211, 238, 0.42), transparent 62%),
+    radial-gradient(ellipse 45% 40% at 78% 78%, rgba(251, 191, 36, 0.22), transparent 58%),
+    linear-gradient(165deg, #0d2431 0%, #123445 55%, #0b1c28 100%);
   pointer-events: none;
 }
 
-.project-card-shade {
+.project-visual-fallback {
   background:
-    linear-gradient(
-      180deg,
-      rgba(3, 7, 18, 0.15) 0%,
-      rgba(3, 7, 18, 0.35) 35%,
-      rgba(3, 7, 18, 0.82) 72%,
-      rgba(3, 7, 18, 0.94) 100%
-    );
-  pointer-events: none;
+    radial-gradient(ellipse 75% 60% at 50% 42%, rgba(34, 211, 238, 0.35), transparent 62%),
+    linear-gradient(165deg, #0d2431 0%, #123445 55%, #0b1c28 100%);
+}
+
+.project-visual-vignette {
+  background:
+    linear-gradient(180deg, rgba(11, 28, 40, 0.05) 0%, rgba(11, 28, 40, 0.15) 70%, rgba(11, 28, 40, 0.55) 100%);
+}
+
+.project-card {
+  min-height: 100%;
 }

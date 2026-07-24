@@ -13,9 +13,7 @@ const ProjectScene = dynamic(
   () => import("@/components/ProjectScene").then((mod) => mod.ProjectScene),
   {
     ssr: false,
-    loading: () => (
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_45%,rgba(34,211,238,0.16),transparent_60%)]" />
-    ),
+    loading: () => <div className="project-visual-fallback absolute inset-0" />,
   },
 );
 
@@ -89,81 +87,59 @@ function buildProjects(repos: GitHubRepo[]): {
   return { featured, more };
 }
 
-function ProjectCard({
-  project,
-  large = false,
-}: {
-  project: DisplayProject;
-  large?: boolean;
-}) {
+function ProjectCard({ project }: { project: DisplayProject }) {
   return (
     <a
       href={project.href}
       target="_blank"
       rel="noopener noreferrer"
-      className={`group relative overflow-hidden rounded-[1.5rem] border border-white/10 bg-[#061018]/70 transition-all duration-500 hover:border-cyan-300/30 hover:bg-[#071520]/85 ${
-        large ? "min-h-[360px] md:min-h-[420px]" : "min-h-[300px]"
-      }`}
+      className="project-card group flex h-full flex-col overflow-hidden rounded-2xl border border-cyan-200/20 bg-[#0b1c28] transition-all duration-300 hover:-translate-y-1 hover:border-cyan-300/45 hover:bg-[#0e2433] hover:shadow-[0_18px_50px_rgba(8,145,178,0.22)]"
     >
-      <div className="absolute inset-0 opacity-90 transition-opacity duration-500 group-hover:opacity-100">
+      <div className="relative h-44 w-full shrink-0 overflow-hidden border-b border-white/10 sm:h-48">
         <ProjectScene visual={project.visual} />
-      </div>
-      <div className="project-card-shade absolute inset-0" />
-
-      <div className="relative z-10 flex h-full flex-col justify-between p-6 md:p-7">
-        <div className="flex items-start justify-between gap-3">
-          <div>
-            {project.featured && (
-              <p className="mb-3 text-[10px] tracking-[0.28em] text-cyan-300/70 uppercase">
-                Featured
-              </p>
-            )}
-            <h3
-              className={`font-serif text-white transition-colors group-hover:text-cyan-200 ${
-                large ? "text-2xl md:text-3xl" : "text-xl"
-              }`}
-            >
-              {project.title}
-            </h3>
-          </div>
-          <span
-            aria-hidden
-            className="text-white/35 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-cyan-300"
-          >
-            ↗
+        <div className="project-visual-vignette pointer-events-none absolute inset-0" />
+        {project.featured && (
+          <span className="absolute top-3 left-3 rounded-full border border-cyan-200/30 bg-[#041018]/70 px-3 py-1 text-[10px] tracking-[0.2em] text-cyan-200 uppercase backdrop-blur-sm">
+            Featured
           </span>
+        )}
+        <span
+          aria-hidden
+          className="absolute top-3 right-3 text-white/50 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-cyan-200"
+        >
+          ↗
+        </span>
+      </div>
+
+      <div className="flex flex-1 flex-col p-5 md:p-6">
+        <h3 className="font-serif text-xl text-white transition-colors group-hover:text-cyan-100">
+          {project.title}
+        </h3>
+
+        <p className="mt-3 line-clamp-3 flex-1 text-sm leading-6 text-white/70">
+          {project.blurb}
+        </p>
+
+        <div className="mt-5 flex flex-wrap items-center gap-2">
+          {project.tags.slice(0, 3).map((tag) => (
+            <span
+              key={tag}
+              className="rounded-full border border-cyan-100/15 bg-white/5 px-3 py-1 text-[10px] tracking-[0.12em] text-cyan-50/75 uppercase"
+            >
+              {tag}
+            </span>
+          ))}
+          {project.language && !project.tags.includes(project.language) && (
+            <span className="rounded-full border border-cyan-100/15 bg-white/5 px-3 py-1 text-[10px] tracking-[0.12em] text-cyan-50/75 uppercase">
+              {project.language}
+            </span>
+          )}
         </div>
 
-        <div>
-          <p
-            className={`max-w-md text-sm leading-6 text-white/60 ${
-              large ? "md:text-[15px] md:leading-7" : "line-clamp-3"
-            }`}
-          >
-            {project.blurb}
-          </p>
-
-          <div className="mt-5 flex flex-wrap items-center gap-2">
-            {project.tags.map((tag) => (
-              <span
-                key={tag}
-                className="rounded-full border border-white/10 bg-black/20 px-3 py-1 text-[10px] tracking-[0.14em] text-white/50 uppercase"
-              >
-                {tag}
-              </span>
-            ))}
-            {project.language && !project.tags.includes(project.language) && (
-              <span className="rounded-full border border-white/10 bg-black/20 px-3 py-1 text-[10px] tracking-[0.14em] text-white/50 uppercase">
-                {project.language}
-              </span>
-            )}
-          </div>
-
-          <div className="mt-4 flex items-center gap-4 text-[11px] tracking-[0.12em] text-white/35 uppercase">
-            <span>★ {project.stars}</span>
-            <span>Forks {project.forks}</span>
-            {project.liveHref ? <span>Live</span> : null}
-          </div>
+        <div className="mt-4 flex items-center gap-4 text-[11px] tracking-[0.12em] text-white/45 uppercase">
+          <span>★ {project.stars}</span>
+          <span>Forks {project.forks}</span>
+          {project.liveHref ? <span className="text-cyan-200/80">Live</span> : null}
         </div>
       </div>
     </a>
@@ -172,7 +148,6 @@ function ProjectCard({
 
 export function ProjectsSection({ repos }: ProjectsSectionProps) {
   const { featured, more } = buildProjects(repos);
-  const [primary, ...restFeatured] = featured;
 
   return (
     <section id="projects" className="relative px-6 py-24 md:px-10 md:py-32">
@@ -180,45 +155,30 @@ export function ProjectsSection({ repos }: ProjectsSectionProps) {
       <div className="mx-auto max-w-[1400px]">
         <div className="mb-14 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div>
-            <p className="mb-4 text-[11px] tracking-[0.28em] text-white/45 uppercase">
+            <p className="mb-4 text-[11px] tracking-[0.28em] text-cyan-200/70 uppercase">
               GitHub Projects
             </p>
             <h2 className="font-serif text-3xl text-white md:text-4xl">
               Visual systems from the lab
             </h2>
           </div>
-          <p className="max-w-sm text-sm text-white/45">
+          <p className="max-w-sm text-sm text-white/55">
             Featured builds with live 3D motifs — synced from GitHub and curated
             for clarity.
           </p>
         </div>
 
         {featured.length === 0 && more.length === 0 ? (
-          <p className="text-sm text-white/45">
+          <p className="text-sm text-white/55">
             No public repositories found. Check back soon.
           </p>
         ) : (
           <>
-            {primary && (
-              <div className="mb-4 grid gap-4 lg:grid-cols-12">
-                <div className="lg:col-span-7">
-                  <ProjectCard project={primary} large />
-                </div>
-                <div className="grid gap-4 sm:grid-cols-2 lg:col-span-5 lg:grid-cols-1">
-                  {restFeatured.slice(0, 2).map((project) => (
-                    <ProjectCard key={project.key} project={project} />
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {restFeatured.length > 2 && (
-              <div className="mb-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-                {restFeatured.slice(2).map((project) => (
-                  <ProjectCard key={project.key} project={project} />
-                ))}
-              </div>
-            )}
+            <div className="grid auto-rows-fr gap-5 sm:grid-cols-2 xl:grid-cols-3">
+              {featured.map((project) => (
+                <ProjectCard key={project.key} project={project} />
+              ))}
+            </div>
 
             {more.length > 0 && (
               <div className="mt-16">
@@ -230,12 +190,12 @@ export function ProjectsSection({ repos }: ProjectsSectionProps) {
                     href={siteConfig.social.github}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-[11px] tracking-[0.18em] text-white/40 uppercase transition-colors hover:text-cyan-300"
+                    className="text-[11px] tracking-[0.18em] text-white/45 uppercase transition-colors hover:text-cyan-200"
                   >
                     View GitHub ↗
                   </a>
                 </div>
-                <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                <div className="grid auto-rows-fr gap-5 sm:grid-cols-2 xl:grid-cols-3">
                   {more.map((project) => (
                     <ProjectCard key={project.key} project={project} />
                   ))}
