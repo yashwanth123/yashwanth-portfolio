@@ -80,22 +80,6 @@ export const siteConfig = {
       visual: "pulse",
       tags: ["Python", "IoT", "Automation"],
     },
-    {
-      repo: "mem0-eval",
-      title: "Mem0 Eval",
-      blurb:
-        "Evaluation harness exploring agent memory layers — recall quality, conflicts, and retrieval.",
-      visual: "helix",
-      tags: ["Python", "Memory", "Evals"],
-    },
-    {
-      repo: "langgraph-eval",
-      title: "LangGraph Eval",
-      blurb:
-        "Resilient multi-agent graph experiments with LangGraph for production-minded workflows.",
-      visual: "core",
-      tags: ["Python", "LangGraph", "Agents"],
-    },
   ] satisfies FeaturedProject[],
   about: {
     title: "Engineering intelligent systems that ship to production.",

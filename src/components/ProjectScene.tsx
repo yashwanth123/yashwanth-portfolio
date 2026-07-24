@@ -417,15 +417,15 @@ export function ProjectScene({ visual, active = true }: ProjectSceneProps) {
       <div className="project-visual-glow" />
       {visible && active ? (
         <Canvas
-          camera={{ position: [0, 0, 1.75], fov: 42 }}
-          dpr={[1, 1.75]}
+          camera={{ position: [0, 0, 1.45], fov: 40 }}
+          dpr={[1, 2]}
           gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
-          style={{ background: "transparent" }}
+          style={{ background: "transparent", width: "100%", height: "100%" }}
         >
-          <ambientLight intensity={0.75} />
-          <pointLight position={[2, 2, 3]} intensity={1.8} color="#67e8f9" />
-          <pointLight position={[-2, -1, 2]} intensity={1.1} color="#fbbf24" />
-          <group scale={1.2}>
+          <ambientLight intensity={1.05} />
+          <pointLight position={[2, 2, 3]} intensity={2.4} color="#ecfeff" />
+          <pointLight position={[-2, -1, 2]} intensity={1.6} color="#fde68a" />
+          <group scale={1.45} position={[0, 0.02, 0]}>
             <VisualContent visual={visual} />
           </group>
         </Canvas>

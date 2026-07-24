@@ -95,29 +95,44 @@ body {
   animation: fade-up 0.9s ease-out 0.45s both;
 }
 
+.projects-section {
+  background:
+    radial-gradient(ellipse 80% 50% at 50% 0%, rgba(34, 211, 238, 0.12), transparent 55%),
+    linear-gradient(180deg, #041018 0%, #0a2430 40%, #041018 100%);
+}
+
 .project-visual {
   isolation: isolate;
+}
+
+.project-visual-frame {
+  background: linear-gradient(180deg, #245f73 0%, #1a4d5f 100%);
 }
 
 .project-visual-glow {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse 75% 60% at 50% 42%, rgba(34, 211, 238, 0.42), transparent 62%),
-    radial-gradient(ellipse 45% 40% at 78% 78%, rgba(251, 191, 36, 0.22), transparent 58%),
-    linear-gradient(165deg, #0d2431 0%, #123445 55%, #0b1c28 100%);
+    radial-gradient(circle at 50% 45%, rgba(165, 243, 252, 0.55), transparent 55%),
+    radial-gradient(circle at 75% 70%, rgba(251, 191, 36, 0.28), transparent 50%),
+    linear-gradient(160deg, #2a6f84 0%, #1d5568 55%, #174858 100%);
   pointer-events: none;
 }
 
 .project-visual-fallback {
   background:
-    radial-gradient(ellipse 75% 60% at 50% 42%, rgba(34, 211, 238, 0.35), transparent 62%),
-    linear-gradient(165deg, #0d2431 0%, #123445 55%, #0b1c28 100%);
+    radial-gradient(circle at 50% 45%, rgba(165, 243, 252, 0.45), transparent 55%),
+    linear-gradient(160deg, #2a6f84 0%, #1d5568 55%, #174858 100%);
 }
 
 .project-visual-vignette {
   background:
-    linear-gradient(180deg, rgba(11, 28, 40, 0.05) 0%, rgba(11, 28, 40, 0.15) 70%, rgba(11, 28, 40, 0.55) 100%);
+    linear-gradient(
+      180deg,
+      rgba(26, 77, 95, 0) 0%,
+      rgba(26, 77, 95, 0.08) 65%,
+      rgba(18, 56, 70, 0.35) 100%
+    );
 }
 
 .project-card {
