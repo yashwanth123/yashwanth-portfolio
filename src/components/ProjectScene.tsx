@@ -42,11 +42,11 @@ function AgentNodes() {
       ))}
       <mesh>
         <torusGeometry args={[0.55, 0.01, 8, 64]} />
-        <meshBasicMaterial color="#67e8f9" transparent opacity={0.35} />
+        <meshBasicMaterial color="#67e8f9" transparent opacity={0.7} />
       </mesh>
       <mesh rotation={[Math.PI / 2, 0, 0]}>
-        <torusGeometry args={[0.38, 0.008, 8, 48]} />
-        <meshBasicMaterial color="#fbbf24" transparent opacity={0.25} />
+        <torusGeometry args={[0.38, 0.01, 8, 48]} />
+        <meshBasicMaterial color="#fbbf24" transparent opacity={0.55} />
       </mesh>
     </group>
   );
@@ -66,15 +66,15 @@ function OrbitRings() {
     <group ref={group}>
       <mesh>
         <icosahedronGeometry args={[0.22, 0]} />
-        <meshBasicMaterial color="#22d3ee" wireframe transparent opacity={0.7} />
+        <meshBasicMaterial color="#67e8f9" wireframe transparent opacity={0.95} />
       </mesh>
       {[0.4, 0.55, 0.7].map((radius, i) => (
         <mesh key={radius} rotation={[Math.PI / 2.4, i * 0.4, i * 0.25]}>
-          <torusGeometry args={[radius, 0.008, 8, 64]} />
+          <torusGeometry args={[radius, 0.012, 8, 64]} />
           <meshBasicMaterial
             color={i === 1 ? "#fbbf24" : "#2dd4bf"}
             transparent
-            opacity={0.45 - i * 0.08}
+            opacity={0.75 - i * 0.08}
           />
         </mesh>
       ))}
@@ -124,7 +124,7 @@ function LatticeGrid() {
         </mesh>
       ))}
       <lineSegments geometry={edges}>
-        <lineBasicMaterial color="#22d3ee" transparent opacity={0.35} />
+        <lineBasicMaterial color="#67e8f9" transparent opacity={0.7} />
       </lineSegments>
     </group>
   );
@@ -149,11 +149,11 @@ function ScanDisc() {
     <group ref={group}>
       <mesh rotation={[-Math.PI / 2, 0, 0]}>
         <ringGeometry args={[0.25, 0.72, 48]} />
-        <meshBasicMaterial color="#22d3ee" transparent opacity={0.18} side={THREE.DoubleSide} />
+        <meshBasicMaterial color="#22d3ee" transparent opacity={0.4} side={THREE.DoubleSide} />
       </mesh>
       <mesh ref={sweep} rotation={[-Math.PI / 2, 0, 0]}>
         <ringGeometry args={[0.2, 0.72, 48, 1, 0, Math.PI / 3]} />
-        <meshBasicMaterial color="#67e8f9" transparent opacity={0.55} side={THREE.DoubleSide} />
+        <meshBasicMaterial color="#a5f3fc" transparent opacity={0.85} side={THREE.DoubleSide} />
       </mesh>
       <mesh>
         <sphereGeometry args={[0.12, 16, 16]} />
@@ -216,12 +216,12 @@ function NetworkGraph() {
             count={linePositions.length / 3}
           />
         </bufferGeometry>
-        <lineBasicMaterial color="#22d3ee" transparent opacity={0.45} />
+        <lineBasicMaterial color="#67e8f9" transparent opacity={0.8} />
       </lineSegments>
       {nodes.map((n, i) => (
         <mesh key={i} position={n}>
-          <sphereGeometry args={[0.05, 10, 10]} />
-          <meshBasicMaterial color={i === 0 ? "#fbbf24" : "#67e8f9"} />
+          <sphereGeometry args={[0.06, 10, 10]} />
+          <meshBasicMaterial color={i === 0 ? "#fbbf24" : "#a5f3fc"} />
         </mesh>
       ))}
     </group>
@@ -238,24 +238,24 @@ function PulseWaves() {
       const scale = 0.4 + ((t * 0.7 + i * 0.35) % 1.4);
       child.scale.setScalar(scale);
       const mat = (child as THREE.Mesh).material as THREE.MeshBasicMaterial;
-      mat.opacity = Math.max(0, 0.55 - scale * 0.28);
+      mat.opacity = Math.max(0, 0.75 - scale * 0.3);
     });
   });
 
   return (
     <group>
       <mesh>
-        <sphereGeometry args={[0.14, 16, 16]} />
-        <meshBasicMaterial color="#2dd4bf" transparent opacity={0.9} />
+        <sphereGeometry args={[0.16, 16, 16]} />
+        <meshBasicMaterial color="#5eead4" transparent opacity={1} />
       </mesh>
       <group ref={rings}>
         {[0, 1, 2].map((i) => (
           <mesh key={i} rotation={[Math.PI / 2, 0, 0]}>
-            <ringGeometry args={[0.22, 0.26, 48]} />
+            <ringGeometry args={[0.22, 0.28, 48]} />
             <meshBasicMaterial
-              color="#22d3ee"
+              color="#67e8f9"
               transparent
-              opacity={0.4}
+              opacity={0.65}
               side={THREE.DoubleSide}
             />
           </mesh>
@@ -289,10 +289,10 @@ function CoreCrystal() {
     <group>
       <mesh ref={mesh}>
         <octahedronGeometry args={[0.28, 0]} />
-        <meshBasicMaterial color="#fbbf24" transparent opacity={0.55} wireframe />
+        <meshBasicMaterial color="#fcd34d" transparent opacity={0.9} wireframe />
       </mesh>
       <lineSegments ref={shell} geometry={edges}>
-        <lineBasicMaterial color="#22d3ee" transparent opacity={0.4} />
+        <lineBasicMaterial color="#67e8f9" transparent opacity={0.75} />
       </lineSegments>
     </group>
   );
@@ -342,10 +342,10 @@ function HelixRibbon() {
         />
       </bufferGeometry>
       <pointsMaterial
-        size={0.035}
+        size={0.05}
         vertexColors
         transparent
-        opacity={0.95}
+        opacity={1}
         sizeAttenuation
         blending={THREE.AdditiveBlending}
         depthWrite={false}
@@ -417,18 +417,20 @@ export function ProjectScene({ visual, active = true }: ProjectSceneProps) {
       <div className="project-visual-glow" />
       {visible && active ? (
         <Canvas
-          camera={{ position: [0, 0, 2.1], fov: 45 }}
-          dpr={[1, 1.5]}
+          camera={{ position: [0, 0, 1.75], fov: 42 }}
+          dpr={[1, 1.75]}
           gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
           style={{ background: "transparent" }}
         >
-          <ambientLight intensity={0.4} />
-          <pointLight position={[2, 2, 3]} intensity={1.1} color="#22d3ee" />
-          <pointLight position={[-2, -1, 2]} intensity={0.6} color="#fbbf24" />
-          <VisualContent visual={visual} />
+          <ambientLight intensity={0.75} />
+          <pointLight position={[2, 2, 3]} intensity={1.8} color="#67e8f9" />
+          <pointLight position={[-2, -1, 2]} intensity={1.1} color="#fbbf24" />
+          <group scale={1.2}>
+            <VisualContent visual={visual} />
+          </group>
         </Canvas>
       ) : (
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_45%,rgba(34,211,238,0.18),transparent_60%)]" />
+        <div className="project-visual-fallback absolute inset-0" />
       )}
     </div>
   );
