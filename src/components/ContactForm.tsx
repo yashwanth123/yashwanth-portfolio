@@ -1,0 +1,110 @@
+"use client";
+
+import { useState, type FormEvent } from "react";
+
+type FormState = "idle" | "sending" | "success" | "error";
+
+export function ContactForm() {
+  const [state, setState] = useState<FormState>("idle");
+  const [errorMessage, setErrorMessage] = useState("");
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setState("sending");
+    setErrorMessage("");
+
+    const form = event.currentTarget;
+    const data = new FormData(form);
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: data.get("name"),
+          email: data.get("email"),
+          message: data.get("message"),
+        }),
+      });
+
+      const result = (await response.json()) as { ok?: boolean; error?: string };
+
+      if (!response.ok || !result.ok) {
+        throw new Error(result.error || "Something went wrong. Please try again.");
+      }
+
+      setState("success");
+      form.reset();
+    } catch (error) {
+      setState("error");
+      setErrorMessage(
+        error instanceof Error ? error.message : "Something went wrong. Please try again.",
+      );
+    }
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+      <div className="grid gap-5 sm:grid-cols-2">
+        <label className="flex flex-col gap-2">
+          <span className="text-[11px] tracking-[0.16em] text-white/45 uppercase">
+            Name
+          </span>
+          <input
+            type="text"
+            name="name"
+            required
+            autoComplete="name"
+            placeholder="Your name"
+            className="rounded-full border border-white/15 bg-white/[0.03] px-5 py-3 text-sm text-white outline-none transition-colors placeholder:text-white/25 focus:border-cyan-400/40"
+          />
+        </label>
+
+        <label className="flex flex-col gap-2">
+          <span className="text-[11px] tracking-[0.16em] text-white/45 uppercase">
+            Email
+          </span>
+          <input
+            type="email"
+            name="email"
+            required
+            autoComplete="email"
+            placeholder="you@example.com"
+            className="rounded-full border border-white/15 bg-white/[0.03] px-5 py-3 text-sm text-white outline-none transition-colors placeholder:text-white/25 focus:border-cyan-400/40"
+          />
+        </label>
+      </div>
+
+      <label className="flex flex-col gap-2">
+        <span className="text-[11px] tracking-[0.16em] text-white/45 uppercase">
+          Message
+        </span>
+        <textarea
+          name="message"
+          required
+          rows={5}
+          placeholder="Write a note — I'll get it by email."
+          className="resize-none rounded-3xl border border-white/15 bg-white/[0.03] px-5 py-4 text-sm leading-7 text-white outline-none transition-colors placeholder:text-white/25 focus:border-cyan-400/40"
+        />
+      </label>
+
+      <button
+        type="submit"
+        disabled={state === "sending"}
+        className="inline-flex w-full items-center justify-center rounded-full border border-white/80 px-7 py-3 text-xs tracking-[0.16em] text-white uppercase transition-all hover:bg-white hover:text-[#030712] disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
+      >
+        {state === "sending" ? "Sending…" : "Send message"}
+      </button>
+
+      {state === "success" && (
+        <p className="text-sm text-cyan-300/80">
+          Message sent — thanks, I&apos;ll get back to you soon.
+        </p>
+      )}
+
+      {state === "error" && (
+        <p className="text-sm text-red-300/80">{errorMessage}</p>
+      )}
+    </form>
+  );
+}

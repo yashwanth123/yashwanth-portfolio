@@ -18,18 +18,15 @@ export type FeaturedProject = {
 };
 
 export const siteConfig = {
-  name: "Yashwanth Sai T",
+  name: "Yashwanth",
   role: "SOFTWARE ENGINEER · GENAI & AGENTIC SYSTEMS",
   headline: "I build clean code and memorable experiences.",
   headlineEmphasis: "experiences",
   heroDescription:
-    "Software Engineer with 5+ years building LLM-powered applications, RAG pipelines, and multi-agent systems — productionized on AWS, GCP, and Azure.",
+    "Software Engineer building LLM-powered applications, RAG pipelines, and multi-agent systems — productionized on AWS, GCP, and Azure.",
   githubUsername: "yashwanth123",
-  email: "yashwanthsi2011@gmail.com",
-  phone: "(213) 451-1130",
   social: {
     github: "https://github.com/yashwanth123",
-    linkedin: "https://www.linkedin.com/in/yashwanthsai-t",
   },
   featuredProjects: [
     {
@@ -84,7 +81,7 @@ export const siteConfig = {
   about: {
     title: "Engineering intelligent systems that ship to production.",
     paragraphs: [
-      "I'm a Software Engineer with 5+ years of experience building and deploying LLM-powered applications, RAG pipelines, and agentic workflows at scale. I've shipped GenAI systems in automotive at General Motors — focusing on production retrieval, evaluation, and multi-agent workflows that hold up beyond demos.",
+      "I'm a Software Engineer building and deploying LLM-powered applications, RAG pipelines, and agentic workflows at scale. I've shipped GenAI systems in automotive at General Motors — focusing on production retrieval, evaluation, and multi-agent workflows that hold up beyond demos.",
       "My core stack spans LangChain, LangGraph, vector databases (Pinecone, pgvector), and LLM APIs from OpenAI, Anthropic, and Gemini. I care deeply about evaluation frameworks, cost optimization, guardrails, and MLOps — not just prototypes that demo well, but systems that hold up in production.",
       "MS in Computer Science from California State University Channel Islands. Open-source contributor across agent infrastructure and eval tooling — including Judgeval (Stanford/Judgment Labs), LangGraph, Mem0, and Llama inference experiments — and builder of projects like Job Agent AI, PulmoScan AI, Military Docs RAG, Spark Dating, and IoT Bot.",
     ],

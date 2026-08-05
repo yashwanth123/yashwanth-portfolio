@@ -1,3 +1,4 @@
+import { ContactForm } from "@/components/ContactForm";
 import { siteConfig } from "@/lib/site-config";
 import { GhostButton } from "@/components/ui/GhostButton";
 
@@ -6,43 +7,31 @@ export function ContactSection() {
     <section id="contact" className="relative px-6 py-24 md:px-10 md:py-32">
       <div className="section-divider mx-auto mb-20 max-w-[1400px]" />
       <div className="mx-auto max-w-[1400px]">
-        <div className="grid gap-12 lg:grid-cols-12 lg:items-end">
-          <div className="lg:col-span-7">
+        <div className="grid gap-12 lg:grid-cols-12 lg:items-start">
+          <div className="lg:col-span-5">
             <p className="mb-4 text-[11px] tracking-[0.28em] text-white/45 uppercase">
               Contact
             </p>
-            <h2 className="max-w-2xl font-serif text-3xl leading-tight text-white md:text-5xl">
-              Let&apos;s build something memorable together.
+            <h2 className="max-w-xl font-serif text-3xl leading-tight text-white md:text-5xl">
+              Send a note — I&apos;ll reply by email.
             </h2>
-          </div>
+            <p className="mt-5 max-w-md text-sm leading-7 text-white/45">
+              No public email or phone here. Drop a message below and it comes
+              straight to my inbox.
+            </p>
 
-          <div className="flex flex-col gap-6 lg:col-span-5">
-            <div className="flex flex-col gap-2">
-              <a
-                href={`mailto:${siteConfig.email}`}
-                className="text-lg text-white/70 transition-colors hover:text-white md:text-xl"
-              >
-                {siteConfig.email}
-              </a>
-              <a
-                href={`tel:${siteConfig.phone.replace(/\D/g, "")}`}
-                className="text-sm tracking-wide text-white/45 transition-colors hover:text-white/70"
-              >
-                {siteConfig.phone}
-              </a>
-            </div>
-
-            <div className="flex flex-wrap gap-4">
+            <div className="mt-8 flex flex-wrap gap-4">
               <GhostButton href={siteConfig.social.github} external>
                 GitHub
-              </GhostButton>
-              <GhostButton href={siteConfig.social.linkedin} external>
-                LinkedIn
               </GhostButton>
               <GhostButton href="#projects" variant="secondary">
                 Projects
               </GhostButton>
             </div>
+          </div>
+
+          <div className="lg:col-span-7">
+            <ContactForm />
           </div>
         </div>
       </div>

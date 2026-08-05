@@ -15,11 +15,11 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "Yashwanth Sai T — Software Engineer",
+  title: "Yashwanth — Software Engineer",
   description:
     "Software Engineer specializing in LLM-powered applications, RAG pipelines, and agentic workflows at scale.",
   openGraph: {
-    title: "Yashwanth Sai T — Software Engineer",
+    title: "Yashwanth — Software Engineer",
     description:
       "Software Engineer specializing in LLM-powered applications, RAG pipelines, and agentic workflows at scale.",
     type: "website",
