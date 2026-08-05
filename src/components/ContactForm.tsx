@@ -103,7 +103,17 @@ export function ContactForm() {
       )}
 
       {state === "error" && (
-        <p className="text-sm text-red-300/80">{errorMessage}</p>
+        <p className="text-sm text-red-300/80">
+          {errorMessage}{" "}
+          <a
+            href="https://github.com/yashwanth123"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline hover:text-white"
+          >
+            GitHub
+          </a>
+        </p>
       )}
     </form>
   );

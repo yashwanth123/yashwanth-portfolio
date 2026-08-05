@@ -1,11 +1,14 @@
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
-  const accessKey = process.env.WEB3FORMS_ACCESS_KEY;
+  const contactEmail = process.env.CONTACT_EMAIL;
 
-  if (!accessKey) {
+  if (!contactEmail) {
     return NextResponse.json(
-      { error: "Contact form is not configured yet." },
+      {
+        error:
+          "Contact form is not configured yet. Try again later or reach out on GitHub.",
+      },
       { status: 503 },
     );
   }
@@ -29,21 +32,34 @@ export async function POST(request: Request) {
     );
   }
 
-  const response = await fetch("https://api.web3forms.com/submit", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      access_key: accessKey,
-      name,
-      email,
-      message,
-      subject: `Portfolio message from ${name}`,
-    }),
-  });
+  const response = await fetch(
+    `https://formsubmit.co/ajax/${encodeURIComponent(contactEmail)}`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({
+        name,
+        email,
+        message,
+        _subject: `Portfolio message from ${name}`,
+        _template: "table",
+        _captcha: "false",
+      }),
+    },
+  );
 
-  const result = (await response.json()) as { success?: boolean; message?: string };
+  let result: { success?: string; message?: string } = {};
 
-  if (!response.ok || !result.success) {
+  try {
+    result = await response.json();
+  } catch {
+    result = {};
+  }
+
+  if (!response.ok) {
     return NextResponse.json(
       { error: result.message || "Failed to send message." },
       { status: 502 },
