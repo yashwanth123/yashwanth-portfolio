@@ -31,7 +31,10 @@ export function ContactSection() {
           </div>
 
           <div className="lg:col-span-7">
-            <ContactForm />
+            <ContactForm
+              contactEmail={process.env.CONTACT_EMAIL}
+              web3formsKey={process.env.WEB3FORMS_ACCESS_KEY}
+            />
           </div>
         </div>
       </div>

@@ -27,18 +27,23 @@ Edit `src/lib/site-config.ts` for your name, copy, email, social links, and feat
 
 ## Environment Variables
 
-Copy `.env.example` to `.env.local` and optionally add a GitHub token for higher API rate limits:
+Copy `.env.example` to `.env.local`:
 
 ```bash
 cp .env.example .env.local
 ```
 
+Set `CONTACT_EMAIL` to the inbox that should receive messages. Optionally add `WEB3FORMS_ACCESS_KEY` (preferred — keeps the inbox address off the client) and `GITHUB_TOKEN` for higher GitHub API rate limits.
+
+The first FormSubmit submission from a new domain sends an activation email. Confirm that link, then later messages are delivered normally.
+
 ## Deploy to Vercel
 
 1. Push this repo to GitHub
 2. Import the project at [vercel.com/new](https://vercel.com/new)
-3. Add `GITHUB_TOKEN` in project settings (optional)
-4. Deploy
+3. Add `CONTACT_EMAIL` in project settings (required for the contact form)
+4. Optionally add `WEB3FORMS_ACCESS_KEY` and `GITHUB_TOKEN`
+5. Deploy
 
 Or use the Vercel CLI:
 
