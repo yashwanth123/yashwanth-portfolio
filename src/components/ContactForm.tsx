@@ -1,12 +1,18 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import {
+  isContactConfigured,
+  submitContactMessage,
+  type ContactConfig,
+} from "@/lib/contact";
 
-type FormState = "idle" | "sending" | "success" | "error";
+type FormState = "idle" | "sending" | "success" | "error" | "activation";
 
-export function ContactForm() {
+export function ContactForm({ contactEmail, web3formsKey }: ContactConfig) {
   const [state, setState] = useState<FormState>("idle");
   const [errorMessage, setErrorMessage] = useState("");
+  const configured = isContactConfigured({ contactEmail, web3formsKey });
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -17,34 +23,44 @@ export function ContactForm() {
     const data = new FormData(form);
 
     try {
-      const response = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: data.get("name"),
-          email: data.get("email"),
-          message: data.get("message"),
-        }),
-      });
+      const result = await submitContactMessage(
+        { contactEmail, web3formsKey },
+        {
+          name: String(data.get("name") ?? ""),
+          email: String(data.get("email") ?? ""),
+          message: String(data.get("message") ?? ""),
+          honey: String(data.get("company") ?? ""),
+        },
+      );
 
-      const result = (await response.json()) as { ok?: boolean; error?: string };
-
-      if (!response.ok || !result.ok) {
-        throw new Error(result.error || "Something went wrong. Please try again.");
+      if (result.ok) {
+        setState("success");
+        form.reset();
+        return;
       }
 
-      setState("success");
-      form.reset();
-    } catch (error) {
+      setErrorMessage(result.error);
+      setState(result.needsActivation ? "activation" : "error");
+    } catch {
       setState("error");
-      setErrorMessage(
-        error instanceof Error ? error.message : "Something went wrong. Please try again.",
-      );
+      setErrorMessage("Something went wrong. Please try again.");
     }
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+    <form onSubmit={handleSubmit} className="relative flex flex-col gap-5">
+      <div className="absolute -left-[9999px] h-0 w-0 overflow-hidden" aria-hidden="true">
+        <label>
+          Company
+          <input
+            type="text"
+            name="company"
+            tabIndex={-1}
+            autoComplete="off"
+          />
+        </label>
+      </div>
+
       <div className="grid gap-5 sm:grid-cols-2">
         <label className="flex flex-col gap-2">
           <span className="text-[11px] tracking-[0.16em] text-white/45 uppercase">
@@ -90,16 +106,35 @@ export function ContactForm() {
 
       <button
         type="submit"
-        disabled={state === "sending"}
+        disabled={state === "sending" || !configured}
         className="inline-flex w-full items-center justify-center rounded-full border border-white/80 px-7 py-3 text-xs tracking-[0.16em] text-white uppercase transition-all hover:bg-white hover:text-[#030712] disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
       >
         {state === "sending" ? "Sending…" : "Send message"}
       </button>
 
+      {!configured && (
+        <p className="text-sm text-red-300/80">
+          Contact form is not configured yet. Reach out on{" "}
+          <a
+            href="https://github.com/yashwanth123"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline hover:text-white"
+          >
+            GitHub
+          </a>
+          .
+        </p>
+      )}
+
       {state === "success" && (
         <p className="text-sm text-cyan-300/80">
           Message sent — thanks, I&apos;ll get back to you soon.
         </p>
+      )}
+
+      {state === "activation" && (
+        <p className="text-sm text-amber-200/80">{errorMessage}</p>
       )}
 
       {state === "error" && (
