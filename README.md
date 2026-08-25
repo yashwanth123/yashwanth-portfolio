@@ -33,7 +33,7 @@ Copy `.env.example` to `.env.local`:
 cp .env.example .env.local
 ```
 
-Set `CONTACT_EMAIL` to the inbox that should receive messages. Optionally add `WEB3FORMS_ACCESS_KEY` (preferred — keeps the inbox address off the client) and `GITHUB_TOKEN` for higher GitHub API rate limits.
+Set `CONTACT_EMAIL` to a full inbox address including `@` (for example `you@gmail.com`). Optionally add `WEB3FORMS_ACCESS_KEY` (preferred — keeps the inbox address off the client) and `GITHUB_TOKEN` for higher GitHub API rate limits.
 
 The first FormSubmit submission from a new domain sends an activation email. Confirm that link, then later messages are delivered normally.
 
