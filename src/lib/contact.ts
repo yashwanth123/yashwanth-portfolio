@@ -3,6 +3,59 @@ export type ContactConfig = {
   web3formsKey?: string;
 };
 
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const KNOWN_EMAIL_DOMAINS = [
+  "gmail.com",
+  "googlemail.com",
+  "outlook.com",
+  "hotmail.com",
+  "yahoo.com",
+  "icloud.com",
+  "proton.me",
+  "protonmail.com",
+];
+
+export function isValidEmail(value: string) {
+  return EMAIL_PATTERN.test(value);
+}
+
+/** Used when Vercel CONTACT_EMAIL is missing or missing `@`. */
+export const FALLBACK_CONTACT_EMAIL = "yashwanthsi2011@gmail.com";
+
+export function resolveContactInbox(value?: string) {
+  return normalizeContactEmail(value) ?? FALLBACK_CONTACT_EMAIL;
+}
+
+export function normalizeContactEmail(value?: string) {
+  const trimmed = value?.trim();
+  if (!trimmed) {
+    return undefined;
+  }
+
+  if (trimmed.includes("@")) {
+    return isValidEmail(trimmed) ? trimmed : undefined;
+  }
+
+  const lower = trimmed.toLowerCase();
+  for (const domain of KNOWN_EMAIL_DOMAINS) {
+    if (!lower.endsWith(domain) || trimmed.length <= domain.length) {
+      continue;
+    }
+
+    const localPart = trimmed.slice(0, trimmed.length - domain.length);
+    if (!localPart || localPart.endsWith(".") || localPart.endsWith("@")) {
+      continue;
+    }
+
+    const candidate = `${localPart}@${trimmed.slice(localPart.length)}`;
+    if (isValidEmail(candidate)) {
+      return candidate;
+    }
+  }
+
+  return undefined;
+}
+
 export type ContactFields = {
   name: string;
   email: string;
@@ -78,8 +131,24 @@ function toSubmitResult(
   response: Response,
   result: ProviderResponse,
   fallback: string,
+  destinationEmail?: string,
 ): ContactSubmitResult {
-  const message = result.message?.trim() || fallback;
+  let message = result.message?.trim() || fallback;
+
+  if (destinationEmail) {
+    const leaked = [
+      destinationEmail,
+      destinationEmail.replace("@", ""),
+      encodeURIComponent(destinationEmail),
+    ];
+    if (leaked.some((token) => message.toLowerCase().includes(token.toLowerCase()))) {
+      message = fallback;
+    }
+  }
+
+  if (/not formatted correctly/i.test(message)) {
+    message = fallback;
+  }
 
   if (looksLikeActivation(message)) {
     return {
@@ -101,8 +170,32 @@ function toSubmitResult(
   return { ok: false, error: message };
 }
 
-export function isContactConfigured(config: ContactConfig) {
-  return Boolean(config.web3formsKey?.trim() || config.contactEmail?.trim());
+export function isContactConfigured(config: ContactConfig = {}) {
+  return Boolean(
+    config.web3formsKey?.trim() || resolveContactInbox(config.contactEmail),
+  );
+}
+
+export async function loadRuntimeContactConfig(
+  fetchImpl: typeof fetch = fetch,
+): Promise<ContactConfig> {
+  try {
+    const response = await fetchImpl("/api/contact-config", {
+      cache: "no-store",
+    });
+
+    if (!response.ok) {
+      return { contactEmail: FALLBACK_CONTACT_EMAIL };
+    }
+
+    const data = (await response.json()) as ContactConfig;
+    return {
+      contactEmail: resolveContactInbox(data.contactEmail),
+      web3formsKey: data.web3formsKey,
+    };
+  } catch {
+    return { contactEmail: FALLBACK_CONTACT_EMAIL };
+  }
 }
 
 export async function submitContactMessage(
@@ -123,7 +216,7 @@ export async function submitContactMessage(
   }
 
   const web3formsKey = config.web3formsKey?.trim();
-  const contactEmail = config.contactEmail?.trim();
+  const contactEmail = resolveContactInbox(config.contactEmail);
 
   if (web3formsKey) {
     const { response, result } = await postJson(
@@ -166,6 +259,7 @@ export async function submitContactMessage(
       response,
       result,
       "Failed to send message. Please try again.",
+      contactEmail,
     );
   }
 
