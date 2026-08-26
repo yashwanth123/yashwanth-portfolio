@@ -33,17 +33,16 @@ Copy `.env.example` to `.env.local`:
 cp .env.example .env.local
 ```
 
-The contact form reads `CONTACT_EMAIL` at request time, repairs missing `@` for known providers, and falls back to a working inbox if the env var is still invalid. Optionally add `WEB3FORMS_ACCESS_KEY` (preferred — keeps the inbox address off the client) and `GITHUB_TOKEN` for higher GitHub API rate limits.
+Optionally add `GITHUB_TOKEN` for higher GitHub API rate limits when fetching repos.
 
-The first FormSubmit submission from a new domain sends an activation email. Confirm that link, then later messages are delivered normally.
+The contact form opens the visitor’s email app with a prefilled message. No FormSubmit or Vercel inbox env var is required.
 
 ## Deploy to Vercel
 
 1. Push this repo to GitHub
 2. Import the project at [vercel.com/new](https://vercel.com/new)
-3. Add `CONTACT_EMAIL` in project settings (required for the contact form)
-4. Optionally add `WEB3FORMS_ACCESS_KEY` and `GITHUB_TOKEN`
-5. Deploy
+3. Optionally add `GITHUB_TOKEN` in project settings
+4. Deploy
 
 Or use the Vercel CLI:
 
