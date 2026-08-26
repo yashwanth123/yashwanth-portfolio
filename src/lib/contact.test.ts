@@ -1,17 +1,27 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import {
+  FALLBACK_CONTACT_EMAIL,
   isContactConfigured,
+  loadRuntimeContactConfig,
   normalizeContactEmail,
+  resolveContactInbox,
   submitContactMessage,
 } from "./contact.ts";
 
-test("isContactConfigured requires an email or Web3Forms key", () => {
-  assert.equal(isContactConfigured({}), false);
-  assert.equal(isContactConfigured({ contactEmail: " " }), false);
-  assert.equal(isContactConfigured({ contactEmail: "me@example.com" }), true);
-  assert.equal(isContactConfigured({ contactEmail: "megmail.com" }), true);
-  assert.equal(isContactConfigured({ contactEmail: "not-an-email" }), false);
+test("resolveContactInbox repairs missing @ and falls back", () => {
+  assert.equal(
+    resolveContactInbox("yashwanthsi2011gmail.com"),
+    "yashwanthsi2011@gmail.com",
+  );
+  assert.equal(resolveContactInbox("me@example.com"), "me@example.com");
+  assert.equal(resolveContactInbox("not-an-email"), FALLBACK_CONTACT_EMAIL);
+  assert.equal(resolveContactInbox(undefined), FALLBACK_CONTACT_EMAIL);
+});
+
+test("isContactConfigured is true when a fallback inbox exists", () => {
+  assert.equal(isContactConfigured({}), true);
+  assert.equal(isContactConfigured({ contactEmail: " " }), true);
   assert.equal(isContactConfigured({ web3formsKey: "abc" }), true);
 });
 
@@ -23,6 +33,44 @@ test("normalizeContactEmail repairs inbox addresses missing @", () => {
   assert.equal(normalizeContactEmail("me@example.com"), "me@example.com");
   assert.equal(normalizeContactEmail("not-an-email"), undefined);
   assert.equal(normalizeContactEmail("gmail.com"), undefined);
+});
+
+test("loadRuntimeContactConfig uses the API payload when present", async () => {
+  const result = await loadRuntimeContactConfig(async () =>
+    Response.json({ contactEmail: "yashwanthsi2011gmail.com" }),
+  );
+
+  assert.deepEqual(result, {
+    contactEmail: "yashwanthsi2011@gmail.com",
+    web3formsKey: undefined,
+  });
+});
+
+test("loadRuntimeContactConfig falls back when the API is down", async () => {
+  const result = await loadRuntimeContactConfig(async () => {
+    throw new Error("network");
+  });
+
+  assert.deepEqual(result, { contactEmail: FALLBACK_CONTACT_EMAIL });
+});
+
+test("submitContactMessage uses the fallback inbox when config is empty", async () => {
+  let url = "";
+
+  const result = await submitContactMessage(
+    {},
+    { name: "Ada", email: "ada@example.com", message: "Hello" },
+    async (input) => {
+      url = String(input);
+      return Response.json({ success: "true" });
+    },
+  );
+
+  assert.equal(
+    url,
+    `https://formsubmit.co/ajax/${encodeURIComponent(FALLBACK_CONTACT_EMAIL)}`,
+  );
+  assert.deepEqual(result, { ok: true });
 });
 
 test("honeypot submissions succeed without calling fetch", async () => {

@@ -19,6 +19,13 @@ export function isValidEmail(value: string) {
   return EMAIL_PATTERN.test(value);
 }
 
+/** Used when Vercel CONTACT_EMAIL is missing or missing `@`. */
+export const FALLBACK_CONTACT_EMAIL = "yashwanthsi2011@gmail.com";
+
+export function resolveContactInbox(value?: string) {
+  return normalizeContactEmail(value) ?? FALLBACK_CONTACT_EMAIL;
+}
+
 export function normalizeContactEmail(value?: string) {
   const trimmed = value?.trim();
   if (!trimmed) {
@@ -163,10 +170,32 @@ function toSubmitResult(
   return { ok: false, error: message };
 }
 
-export function isContactConfigured(config: ContactConfig) {
+export function isContactConfigured(config: ContactConfig = {}) {
   return Boolean(
-    config.web3formsKey?.trim() || normalizeContactEmail(config.contactEmail),
+    config.web3formsKey?.trim() || resolveContactInbox(config.contactEmail),
   );
+}
+
+export async function loadRuntimeContactConfig(
+  fetchImpl: typeof fetch = fetch,
+): Promise<ContactConfig> {
+  try {
+    const response = await fetchImpl("/api/contact-config", {
+      cache: "no-store",
+    });
+
+    if (!response.ok) {
+      return { contactEmail: FALLBACK_CONTACT_EMAIL };
+    }
+
+    const data = (await response.json()) as ContactConfig;
+    return {
+      contactEmail: resolveContactInbox(data.contactEmail),
+      web3formsKey: data.web3formsKey,
+    };
+  } catch {
+    return { contactEmail: FALLBACK_CONTACT_EMAIL };
+  }
 }
 
 export async function submitContactMessage(
@@ -187,7 +216,7 @@ export async function submitContactMessage(
   }
 
   const web3formsKey = config.web3formsKey?.trim();
-  const contactEmail = normalizeContactEmail(config.contactEmail);
+  const contactEmail = resolveContactInbox(config.contactEmail);
 
   if (web3formsKey) {
     const { response, result } = await postJson(

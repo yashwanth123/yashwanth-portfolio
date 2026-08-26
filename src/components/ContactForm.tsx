@@ -2,17 +2,15 @@
 
 import { useState, type FormEvent } from "react";
 import {
-  isContactConfigured,
+  loadRuntimeContactConfig,
   submitContactMessage,
-  type ContactConfig,
 } from "@/lib/contact";
 
 type FormState = "idle" | "sending" | "success" | "error" | "activation";
 
-export function ContactForm({ contactEmail, web3formsKey }: ContactConfig) {
+export function ContactForm() {
   const [state, setState] = useState<FormState>("idle");
   const [errorMessage, setErrorMessage] = useState("");
-  const configured = isContactConfigured({ contactEmail, web3formsKey });
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -23,15 +21,13 @@ export function ContactForm({ contactEmail, web3formsKey }: ContactConfig) {
     const data = new FormData(form);
 
     try {
-      const result = await submitContactMessage(
-        { contactEmail, web3formsKey },
-        {
-          name: String(data.get("name") ?? ""),
-          email: String(data.get("email") ?? ""),
-          message: String(data.get("message") ?? ""),
-          honey: String(data.get("company") ?? ""),
-        },
-      );
+      const config = await loadRuntimeContactConfig();
+      const result = await submitContactMessage(config, {
+        name: String(data.get("name") ?? ""),
+        email: String(data.get("email") ?? ""),
+        message: String(data.get("message") ?? ""),
+        honey: String(data.get("company") ?? ""),
+      });
 
       if (result.ok) {
         setState("success");
@@ -106,26 +102,11 @@ export function ContactForm({ contactEmail, web3formsKey }: ContactConfig) {
 
       <button
         type="submit"
-        disabled={state === "sending" || !configured}
+        disabled={state === "sending"}
         className="inline-flex w-full items-center justify-center rounded-full border border-white/80 px-7 py-3 text-xs tracking-[0.16em] text-white uppercase transition-all hover:bg-white hover:text-[#030712] disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
       >
         {state === "sending" ? "Sending…" : "Send message"}
       </button>
-
-      {!configured && (
-        <p className="text-sm text-red-300/80">
-          Contact form is not configured yet. Reach out on{" "}
-          <a
-            href="https://github.com/yashwanth123"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline hover:text-white"
-          >
-            GitHub
-          </a>
-          .
-        </p>
-      )}
 
       {state === "success" && (
         <p className="text-sm text-cyan-300/80">

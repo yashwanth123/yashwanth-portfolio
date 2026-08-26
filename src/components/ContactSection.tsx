@@ -1,5 +1,4 @@
 import { ContactForm } from "@/components/ContactForm";
-import { normalizeContactEmail } from "@/lib/contact";
 import { siteConfig } from "@/lib/site-config";
 import { GhostButton } from "@/components/ui/GhostButton";
 
@@ -32,10 +31,7 @@ export function ContactSection() {
           </div>
 
           <div className="lg:col-span-7">
-            <ContactForm
-              contactEmail={normalizeContactEmail(process.env.CONTACT_EMAIL)}
-              web3formsKey={process.env.WEB3FORMS_ACCESS_KEY}
-            />
+            <ContactForm />
           </div>
         </div>
       </div>
