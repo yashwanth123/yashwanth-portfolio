@@ -1,46 +1,38 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import {
-  loadRuntimeContactConfig,
-  submitContactMessage,
-} from "@/lib/contact";
+import { buildMailto } from "@/lib/contact";
 
-type FormState = "idle" | "sending" | "success" | "error" | "activation";
+type FormState = "idle" | "sending" | "success";
 
 export function ContactForm() {
   const [state, setState] = useState<FormState>("idle");
-  const [errorMessage, setErrorMessage] = useState("");
+  const [mailtoHref, setMailtoHref] = useState("");
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setState("sending");
-    setErrorMessage("");
 
     const form = event.currentTarget;
     const data = new FormData(form);
 
-    try {
-      const config = await loadRuntimeContactConfig();
-      const result = await submitContactMessage(config, {
-        name: String(data.get("name") ?? ""),
-        email: String(data.get("email") ?? ""),
-        message: String(data.get("message") ?? ""),
-        honey: String(data.get("company") ?? ""),
-      });
-
-      if (result.ok) {
-        setState("success");
-        form.reset();
-        return;
-      }
-
-      setErrorMessage(result.error);
-      setState(result.needsActivation ? "activation" : "error");
-    } catch {
-      setState("error");
-      setErrorMessage("Something went wrong. Please try again.");
+    if (String(data.get("company") ?? "").trim()) {
+      setState("success");
+      form.reset();
+      return;
     }
+
+    setState("sending");
+
+    const href = buildMailto({
+      name: String(data.get("name") ?? ""),
+      email: String(data.get("email") ?? ""),
+      message: String(data.get("message") ?? ""),
+    });
+
+    setMailtoHref(href);
+    window.location.assign(href);
+    form.reset();
+    setState("success");
   }
 
   return (
@@ -105,30 +97,22 @@ export function ContactForm() {
         disabled={state === "sending"}
         className="inline-flex w-full items-center justify-center rounded-full border border-white/80 px-7 py-3 text-xs tracking-[0.16em] text-white uppercase transition-all hover:bg-white hover:text-[#030712] disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
       >
-        {state === "sending" ? "Sending…" : "Send message"}
+        {state === "sending" ? "Opening…" : "Send message"}
       </button>
 
       {state === "success" && (
         <p className="text-sm text-cyan-300/80">
-          Message sent — thanks, I&apos;ll get back to you soon.
-        </p>
-      )}
-
-      {state === "activation" && (
-        <p className="text-sm text-amber-200/80">{errorMessage}</p>
-      )}
-
-      {state === "error" && (
-        <p className="text-sm text-red-300/80">
-          {errorMessage}{" "}
-          <a
-            href="https://github.com/yashwanth123"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline hover:text-white"
-          >
-            GitHub
-          </a>
+          Your email app should open with the message. Send it from there.
+          {mailtoHref ? (
+            <>
+              {" "}
+              If nothing opened,{" "}
+              <a href={mailtoHref} className="underline hover:text-white">
+                click here
+              </a>
+              .
+            </>
+          ) : null}
         </p>
       )}
     </form>
